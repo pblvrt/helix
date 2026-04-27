@@ -1,0 +1,109 @@
+{
+  "name": "helix",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Goal-driven agent coordination engine — Goals → Board → Executor wired to Claude agents, with an MCP catalog, OAuth-aware installer, per-goal MCP scoping, knowledge base, and live chat.",
+  "author": "Pablo Voorvaart",
+  "license": "MIT",
+  "type": "module",
+  "main": "./out/main/main.js",
+  "scripts": {
+    "dev": "vite",
+    "dev:electron": "electron-vite dev",
+    "build:electron": "electron-vite build",
+    "preview:electron": "electron-vite preview",
+    "pack": "electron-vite build && electron-builder --dir",
+    "dist": "electron-vite build && electron-builder",
+    "rebuild": "electron-rebuild",
+    "server": "tsx backend/server.ts",
+    "start": "npm run server & npm run dev",
+    "chrome": "open -a 'Google Chrome' --args --remote-debugging-port=9222",
+    "chrome:check": "curl -s http://localhost:9222/json/version || echo 'Chrome not running with remote debugging'",
+    "test": "vitest run",
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "build": {
+    "appId": "com.helix.app",
+    "productName": "Helix",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "out/**/*",
+      "node_modules/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": ".claude",
+        "to": ".claude",
+        "filter": [
+          "agents/**",
+          "commands/**",
+          "knowledge/**",
+          "skills/**"
+        ]
+      },
+      ".mcp.json"
+    ],
+    "mac": {
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "nsis": {
+      "oneClick": true,
+      "allowToChangeInstallationDirectory": false
+    },
+    "linux": {
+      "target": "AppImage"
+    }
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.96.2",
+    "better-sqlite3": "^12.8.0",
+    "cors": "^2.8.6",
+    "electron-log": "^5.4.3",
+    "electron-updater": "^6.8.3",
+    "express": "^5.2.1",
+    "lucide-react": "^0.577.0",
+    "node-cron": "^4.2.1",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "react-markdown": "^10.1.0",
+    "react-router-dom": "^7.13.1",
+    "remark-gfm": "^4.0.1"
+  },
+  "devDependencies": {
+    "@electron/rebuild": "^4.0.3",
+    "@eslint/js": "^9.39.1",
+    "@tailwindcss/vite": "^4.2.1",
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/node": "^24.10.1",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.1.1",
+    "electron": "^41.0.4",
+    "electron-builder": "^26.8.1",
+    "electron-vite": "^5.0.0",
+    "eslint": "^9.39.1",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.4.24",
+    "globals": "^16.5.0",
+    "tailwindcss": "^4.2.1",
+    "tsx": "^4.21.0",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.48.0",
+    "vite": "^7.3.1",
+    "vitest": "^4.1.2"
+  }
+}

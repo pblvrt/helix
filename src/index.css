@@ -1,0 +1,193 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100..900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+/* ============================================================================
+   Theme — design tokens registered as Tailwind utilities
+   Usage: text-brand, bg-surface-1, border-edge, text-primary, etc.
+   ============================================================================ */
+
+@theme {
+  /* Brand (use "brand" to avoid colliding with Tailwind's built-in blue palette) */
+  --color-brand: #2563EB;
+  --color-brand-dim: #1D4ED8;
+  --color-brand-light: #EFF6FF;
+
+  /* Surfaces */
+  --color-surface-0: #FFFFFF;
+  --color-surface-1: #F9FAFB;
+  --color-surface-2: #F3F4F6;
+  --color-surface-3: #E5E7EB;
+
+  /* Borders */
+  --color-edge: #E5E7EB;
+  --color-edge-focus: #2563EB;
+
+  /* Text */
+  --color-primary: #111827;
+  --color-secondary: #4B5563;
+  --color-muted: #9CA3AF;
+
+  /* Typography */
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  /* Radii */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+}
+
+/* ============================================================================
+   Base
+   ============================================================================ */
+
+* { box-sizing: border-box; }
+
+body {
+  @apply m-0 bg-surface-0 text-primary font-sans text-[13px] leading-relaxed antialiased;
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { @apply bg-surface-3 rounded-sm; }
+::-webkit-scrollbar-thumb:hover { background: #D1D5DB; }
+
+/* ============================================================================
+   Animations
+   ============================================================================ */
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-in { animation: fadeInUp 0.35s ease-out both; }
+.animate-fade { animation: fadeIn 0.25s ease-out both; }
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-4px); }
+  40% { transform: translateX(4px); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(2px); }
+}
+
+@keyframes indeterminate {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(400%); }
+}
+
+/* ============================================================================
+   Page layouts — two modes: scrollable (centered, max-width) and full (viewport)
+   ============================================================================ */
+
+/* Scrollable content pages — centered with consistent max-width */
+.page-narrow {
+  @apply max-w-4xl mx-auto;
+  animation: fadeIn 0.25s ease-out both;
+}
+.page-wide {
+  @apply max-w-[1200px] mx-auto;
+  animation: fadeIn 0.25s ease-out both;
+}
+.page-full {
+  @apply h-[calc(100vh-104px)];
+  animation: fadeIn 0.25s ease-out both;
+}
+
+/* Page header — consistent across all pages */
+.page-header { @apply mb-6 mt-2; }
+.page-title  { @apply text-[22px] font-bold tracking-tight; }
+.page-subtitle { @apply text-sm text-muted mt-1; }
+
+/* ============================================================================
+   Component classes — kept as @apply for reuse across 9+ files
+   ============================================================================ */
+
+/* Cards */
+.card {
+  @apply bg-surface-0 border border-edge rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.04)];
+}
+.card:hover {
+  @apply border-gray-300 shadow-[0_4px_12px_rgba(0,0,0,0.06)];
+}
+.card-flat {
+  @apply bg-surface-0 border border-edge rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.04)];
+}
+
+/* Buttons */
+.btn {
+  @apply inline-flex items-center justify-center gap-1.5 text-[13px] font-medium px-4 py-2 rounded-lg border-none cursor-pointer transition-all duration-150;
+}
+.btn-primary { @apply bg-brand text-white; }
+.btn-primary:hover { @apply bg-brand-dim; }
+.btn-primary:disabled { @apply opacity-40 cursor-not-allowed; }
+.btn-success { @apply bg-emerald-600 text-white; }
+.btn-success:hover { @apply bg-emerald-700; }
+.btn-ghost { @apply bg-surface-2 text-secondary; }
+.btn-ghost:hover { @apply bg-surface-3; }
+.btn-danger-ghost { @apply bg-surface-2 text-muted; }
+.btn-danger-ghost:hover { @apply bg-red-50 text-red-600; }
+.btn-sm { @apply text-xs px-2.5 py-1.5 rounded-md; }
+.btn-xs { @apply text-[10px] font-semibold px-2 py-1 rounded-sm; }
+
+/* Tags / badges */
+.tag {
+  @apply inline-flex items-center text-[9px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded;
+}
+.tag-md { @apply text-[10px] px-2 py-0.5; }
+
+/* Inputs */
+.input {
+  @apply w-full bg-surface-1 border border-edge rounded-lg px-4 py-2.5 text-[13px] font-[inherit] text-primary transition-all duration-150;
+}
+.input:focus {
+  @apply outline-none border-edge-focus ring-[3px] ring-brand/10;
+}
+.input::placeholder { @apply text-muted; }
+.input-mono { @apply font-mono text-xs; }
+
+/* Sections */
+.section { @apply bg-surface-1 border border-edge rounded-lg p-4; }
+.section-label { @apply text-[11px] font-semibold uppercase tracking-wide text-muted; }
+
+/* Signal cards */
+.signal-card { @apply border rounded-lg px-4 py-3; }
+.signal-card-red { @apply bg-red-50/60 border-red-200; }
+.signal-card-amber { @apply bg-amber-50/60 border-amber-200; }
+.signal-card-orange { @apply bg-orange-50/60 border-orange-200; }
+
+/* Score colors */
+.score-hot { @apply text-red-600 bg-red-50; }
+.score-warm { @apply text-amber-600 bg-amber-50; }
+.score-cool { @apply text-brand bg-brand-light; }
+.score-cold { @apply text-gray-500 bg-surface-1; }
+
+/* Chip toggles */
+.chip {
+  @apply text-xs font-medium px-3 py-1.5 rounded-md border border-edge bg-white text-secondary cursor-pointer transition-all duration-150;
+}
+.chip:hover { @apply border-gray-300; }
+.chip-active {
+  @apply bg-brand text-white border-brand shadow-[0_1px_2px_rgba(37,99,235,0.2)];
+}
+
+/* Quick preset buttons */
+.preset-btn {
+  @apply text-[10px] font-medium px-2.5 py-0.5 rounded-sm bg-surface-2 text-muted cursor-pointer border-none transition-all duration-150;
+}
+.preset-btn:hover { @apply bg-surface-3 text-secondary; }
+
+/* Mono text block */
+.mono-block {
+  @apply bg-surface-1 border border-edge rounded-lg px-4 py-3 font-mono text-[11px] text-muted break-all leading-relaxed max-h-[120px] overflow-y-auto;
+}
+
+/* Kbd */
+kbd { @apply font-mono text-[10px] px-1.5 py-0.5 rounded bg-surface-2; }

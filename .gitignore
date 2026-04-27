@@ -1,0 +1,38 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+out
+release
+__pycache__/
+*.pyc
+*.local
+data/
+.superset/
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+GFJSPBT7BW.*
+*.p12
+*.cer
+*.certSigningRequest
+
+# Runtime MCP config — DB-derived; may contain bearer tokens after OAuth installs.
+# Use .mcp.json.example as the seed; importMcpJsonIfEmpty migrates it on first boot.
+.mcp.json

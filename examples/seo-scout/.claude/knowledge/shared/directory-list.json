@@ -1,0 +1,49 @@
+{
+  "$schema": "Seed list of SaaS/startup directories to submit Scout to. tier: 1=high-DR/high-priority, 2=medium, 3=long-tail. status: pending|submitted|live|rejected|skipped.",
+  "directories": [
+    { "name": "Product Hunt",          "tier": 1, "url": "https://www.producthunt.com/posts/new",                      "submitType": "launch",    "notes": "Coordinate as a proper launch — not just a submission. Pick a Tuesday/Wednesday. Need hunter." },
+    { "name": "Fazier",                "tier": 1, "url": "https://fazier.com/submit",                                   "submitType": "directory", "notes": "High-DR, responsive editors. Include clear screenshot." },
+    { "name": "PeerPush",              "tier": 1, "url": "https://peerpush.net/submit",                                 "submitType": "directory", "notes": "Founder-friendly community. Upvote-based ranking." },
+    { "name": "BetaList",              "tier": 1, "url": "https://betalist.com/submit",                                 "submitType": "directory", "notes": "Slow review queue. Worth the backlink." },
+    { "name": "AlternativeTo",         "tier": 1, "url": "https://alternativeto.net/account/submit-application/",       "submitType": "directory", "notes": "Submit as alternative to Apollo, Clay, Instantly, Taplio, Dux-Soup." },
+    { "name": "SaaSHub",               "tier": 1, "url": "https://www.saashub.com/add-listing",                         "submitType": "directory", "notes": "Classic SaaS directory. Fill all fields." },
+    { "name": "G2",                    "tier": 1, "url": "https://www.g2.com/products/new",                             "submitType": "review",    "notes": "Review site. Need initial reviews from real customers before visibility." },
+    { "name": "Capterra",              "tier": 1, "url": "https://www.capterra.com/vendors/sign-up",                    "submitType": "review",    "notes": "Gartner-owned. Long form, careful." },
+    { "name": "Uneed",                 "tier": 1, "url": "https://uneed.best/submit-a-tool",                            "submitType": "directory", "notes": "Curated weekly picks. Include a clean demo." },
+    { "name": "Indie Hackers Products","tier": 1, "url": "https://www.indiehackers.com/products/new",                   "submitType": "community", "notes": "Best for ongoing build-in-public posts, not just listing." },
+
+    { "name": "Startup Stash",         "tier": 2, "url": "https://startupstash.com/submit-your-startup/",               "submitType": "directory", "notes": "Broad startup directory." },
+    { "name": "SaaSworthy",            "tier": 2, "url": "https://www.saasworthy.com/addlisting",                       "submitType": "directory", "notes": "DR 75+. Free basic listing." },
+    { "name": "SideProjectors",        "tier": 2, "url": "https://www.sideprojectors.com/#/project/new",                "submitType": "directory", "notes": "Indie / side-project focused." },
+    { "name": "DevHunt",               "tier": 2, "url": "https://devhunt.org/submit",                                  "submitType": "directory", "notes": "Developer-leaning PH alternative." },
+    { "name": "Launching Next",        "tier": 2, "url": "https://www.launchingnext.com/submit/",                       "submitType": "directory", "notes": "Old but decent DR." },
+    { "name": "Startup Buffer",        "tier": 2, "url": "https://startupbuffer.com/submit-startup/",                   "submitType": "directory", "notes": "Paid tiers available; free listing exists." },
+    { "name": "Tiny Startups",         "tier": 2, "url": "https://tinystartups.com/submit",                             "submitType": "directory", "notes": "Indie curation." },
+    { "name": "10words",               "tier": 2, "url": "https://10words.io/submit",                                   "submitType": "directory", "notes": "Newsletter + directory." },
+    { "name": "OpenTools.ai",          "tier": 2, "url": "https://opentools.ai/submit",                                 "submitType": "directory", "notes": "AI tools directory." },
+    { "name": "Future Tools",          "tier": 2, "url": "https://www.futuretools.io/submit-a-tool",                    "submitType": "directory", "notes": "AI tools directory, Matt Wolfe-curated." },
+
+    { "name": "SaaSAI Tools",          "tier": 3, "url": "https://saasaitools.com/submit",                              "submitType": "directory", "notes": "AI + SaaS crossover." },
+    { "name": "There's An AI For That","tier": 3, "url": "https://theresanaiforthat.com/submit-tool/",                  "submitType": "directory", "notes": "High traffic, fair DR. Paid fast-track option." },
+    { "name": "AIToolKit",             "tier": 3, "url": "https://aitoolkit.ai/submit",                                 "submitType": "directory", "notes": "AI directory." },
+    { "name": "ToolPilot",             "tier": 3, "url": "https://www.toolpilot.ai/submit",                             "submitType": "directory", "notes": "AI directory." },
+    { "name": "AI Scout",              "tier": 3, "url": "https://aiscout.net/submit-ai-tool",                          "submitType": "directory", "notes": "AI directory." },
+    { "name": "Product Hunt Alternatives", "tier": 3, "url": "https://www.producthunt.com/alternatives",                "submitType": "skip",      "notes": "Meta — use for research only." }
+  ],
+  "profile": {
+    "note": "Use these fields when filling any directory form. Source of truth: scout-profile.md.",
+    "name": "Scout",
+    "tagline": "AI-powered LinkedIn lead generation that runs on your Mac, not in the cloud.",
+    "url": "https://scout.pblvrt.com",
+    "categoryPrimary": "Sales Automation",
+    "categorySecondary": "AI Tools / Lead Generation / CRM",
+    "pricing": "$199 one-time (lifetime license)",
+    "platform": "macOS, Windows, Linux desktop app",
+    "founderName": "Pablo Voorvaart",
+    "founderEmail": "pablo@streameth.org",
+    "descShort": "AI-powered LinkedIn lead generation that runs on your Mac, not in the cloud.",
+    "desc50": "Scout is an AI SDR that runs locally on your computer and automates LinkedIn prospecting end-to-end — finds leads via Sales Navigator, scores them against your ICP, drafts personalized first messages, and sends connection requests.",
+    "desc100": "@see scout-profile.md `## Description — 100 words`",
+    "desc250": "@see scout-profile.md `## Description — 250 words`"
+  }
+}

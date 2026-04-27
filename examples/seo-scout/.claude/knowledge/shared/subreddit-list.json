@@ -1,0 +1,118 @@
+{
+  "$schema": "Seeded subreddits for Scout. tier: 1=primary/high-fit, 2=secondary, 3=niche. selfPromo: rules/status on self-promotion.",
+  "subreddits": [
+    {
+      "name": "r/SaaS",
+      "tier": 1,
+      "url": "https://www.reddit.com/r/SaaS/",
+      "members": "250k+",
+      "selfPromo": "strict - Self-Promotion Saturday thread only, no external links in posts",
+      "flairs": ["Build Story", "Lessons Learned", "Question"],
+      "angle": "Lessons from building. Show numbers. No link until comments.",
+      "banRisk": "medium"
+    },
+    {
+      "name": "r/startups",
+      "tier": 1,
+      "url": "https://www.reddit.com/r/startups/",
+      "members": "1M+",
+      "selfPromo": "limited - needs to be a real lesson, not a pitch",
+      "flairs": ["Resource Request", "Feedback"],
+      "angle": "Founder lesson + specific numbers. Scout mentioned in passing.",
+      "banRisk": "medium"
+    },
+    {
+      "name": "r/EntrepreneurRideAlong",
+      "tier": 1,
+      "url": "https://www.reddit.com/r/EntrepreneurRideAlong/",
+      "members": "200k+",
+      "selfPromo": "tolerant - build-in-public welcome",
+      "flairs": [],
+      "angle": "Milestone posts with MRR/traffic/cost numbers. Full playbook. Scout named once.",
+      "banRisk": "low"
+    },
+    {
+      "name": "r/indiehackers",
+      "tier": 1,
+      "url": "https://www.reddit.com/r/indiehackers/",
+      "members": "50k+",
+      "selfPromo": "tolerant - founder-friendly",
+      "flairs": [],
+      "angle": "Milestone + lesson. Scout named early-middle. Link fine.",
+      "banRisk": "low"
+    },
+    {
+      "name": "r/sales",
+      "tier": 2,
+      "url": "https://www.reddit.com/r/sales/",
+      "members": "550k+",
+      "selfPromo": "hostile to AI-replacing-jobs framing",
+      "flairs": [],
+      "angle": "Workflow post, not replacement post. 'How I do outbound as a founder.' Don't say AI SDR here.",
+      "banRisk": "high"
+    },
+    {
+      "name": "r/SideProject",
+      "tier": 2,
+      "url": "https://www.reddit.com/r/SideProject/",
+      "members": "150k+",
+      "selfPromo": "tolerant - meant for launches",
+      "flairs": [],
+      "angle": "Screenshot + 3-sentence pitch + link. Low effort allowed.",
+      "banRisk": "low"
+    },
+    {
+      "name": "r/smallbusiness",
+      "tier": 2,
+      "url": "https://www.reddit.com/r/smallbusiness/",
+      "members": "2M+",
+      "selfPromo": "strict - weekly self-promo thread only usually",
+      "flairs": ["General", "Sales"],
+      "angle": "Non-technical audience. Frame as 'automate LinkedIn outreach' not 'AI SDR'. Check rules before every post.",
+      "banRisk": "high"
+    },
+    {
+      "name": "r/coldemail",
+      "tier": 3,
+      "url": "https://www.reddit.com/r/coldemail/",
+      "members": "50k+",
+      "selfPromo": "case-by-case, mods active",
+      "flairs": [],
+      "angle": "Teach specific tactic (first-message writing, ICP definition). Scout fits in comments.",
+      "banRisk": "medium"
+    },
+    {
+      "name": "r/SalesOperations",
+      "tier": 3,
+      "url": "https://www.reddit.com/r/SalesOperations/",
+      "members": "25k+",
+      "selfPromo": "strict",
+      "flairs": [],
+      "angle": "Workflow/architecture posts. No pitch.",
+      "banRisk": "high"
+    },
+    {
+      "name": "r/b2b_sales",
+      "tier": 3,
+      "url": "https://www.reddit.com/r/b2b_sales/",
+      "members": "30k+",
+      "selfPromo": "tolerant",
+      "flairs": [],
+      "angle": "Specific tactic posts work.",
+      "banRisk": "low"
+    }
+  ],
+  "postingRules": {
+    "maxPerSubPerWeek": 1,
+    "staggerDays": true,
+    "rewritePerSub": true,
+    "respondWithin": "2 hours after posting",
+    "neverDo": [
+      "cross-post same text verbatim",
+      "use marketing adjectives (supercharge, game-changer, revolutionary)",
+      "argue with mods or angry commenters",
+      "upvote-bait ('upvote if you agree')",
+      "reply to own post from alt account"
+    ]
+  }
+}
