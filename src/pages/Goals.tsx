@@ -60,7 +60,7 @@ export default function Goals() {
             onKeyDown={e => {
               if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); handleContinue(); }
             }}
-            placeholder="Q2 SEO push — ship 3 comparison posts per week (apollo, clay, instantly alternatives). No reddit for now."
+            placeholder="Start reaching out to 50 founders in YC W24 with a personalized note · Or: ship 3 comparison blog posts per week · Or: research 20 podcasts to pitch as a guest"
             rows={3}
             className="w-full px-5 py-4 text-[14px] leading-relaxed bg-transparent focus:outline-none placeholder:text-muted/60 resize-none"
           />

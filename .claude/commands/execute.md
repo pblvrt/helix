@@ -24,7 +24,11 @@ instructions. No file changes, no enum edits.
 2. `GET /api/tasks/:id` for the full row.
 3. Resolve the agent from `task.payload.goalContext.agentType`. If missing,
    PATCH the task to `blocked` and continue — the planner must declare an
-   agent.
+   agent. **Also block** if the declared agent has no
+   `.claude/agents/<name>.md` file: without it the `Task` tool spawns a
+   stripped-down default subagent (no MCP allowlist, no skills) that will
+   silently burn the 1-hour budget pretending to work. The block message
+   should tell the user to wire the agent in.
 4. `PATCH /api/tasks/:id { status: "in_progress" }`.
 5. Build the prompt (see "Prompt shape" below).
 6. Spawn via `Task` tool with `subagent_type = <agentType>`.
@@ -84,6 +88,28 @@ Resolve: `task.payload.knowledgeSlugs ?? agentFrontmatter.knowledgeSlugs ?? ["go
 
 Fetch: `GET /api/knowledge/prompt?slugs=<csv>`.
 
+## Curl idioms — fail loudly, never swallow errors
+
+Every API mutation MUST surface failures or you'll silently lose state.
+Pattern:
+
+```bash
+curl -s --fail-with-body -X PATCH "$URL" \
+  -H 'Content-Type: application/json' -d '{...}' \
+  || { echo "PATCH $URL FAILED — aborting"; exit 1; }
+```
+
+- `-s` quiet progress, `-f` fail on HTTP error, `--fail-with-body` print
+  the error body so you know *why*.
+- Always `|| { echo ...; exit 1; }`. Never `; echo ...` (always-prints
+  obscures the failure). Never `> /dev/null 2>&1 || true` on a mutation —
+  that mistakes "succeeded" for "failed silently."
+
+If the API is down mid-run (hot-reload restart, killed window), the right
+move is to abort the iteration. The next `/execute` invocation will pick
+the task back up — boot recovery moves stranded `in_progress` rows to
+`backlog`, but it logs that it did so.
+
 ## Shell for the loop
 
 ```bash
@@ -92,7 +118,8 @@ ONLY_TYPE=$(printf '%s\n'  "$ARGUMENTS" | grep -oE 'onlyType=[^ ]+'    | cut -d=
 ONLY_GOAL=$(printf '%s\n'  "$ARGUMENTS" | grep -oE 'onlyGoalId=[^ ]+'  | cut -d= -f2-)
 ONLY_AGENT=$(printf '%s\n' "$ARGUMENTS" | grep -oE 'onlyAgent=[^ ]+'   | cut -d= -f2-)
 
-TASKS_JSON=$(curl -s 'http://localhost:3458/api/tasks?status=backlog&eligibleOnly=true')
+TASKS_JSON=$(curl -sf 'http://localhost:3458/api/tasks?status=backlog&eligibleOnly=true') \
+  || { echo "GET /api/tasks FAILED"; exit 1; }
 TASK_ID=$(echo "$TASKS_JSON" | jq -r \
   --arg t "$ONLY_TYPE" --arg g "$ONLY_GOAL" --arg a "$ONLY_AGENT" '
     map(select(
@@ -101,17 +128,34 @@ TASK_ID=$(echo "$TASKS_JSON" | jq -r \
       ($a == "" or (.payload.goalContext.agentType // "") == $a)
     )) | .[0].id // empty')
 
-TASK=$(curl -s "http://localhost:3458/api/tasks/$TASK_ID")
+TASK=$(curl -sf "http://localhost:3458/api/tasks/$TASK_ID") \
+  || { echo "GET /api/tasks/$TASK_ID FAILED"; exit 1; }
 AGENT=$(echo "$TASK" | jq -r '.payload.goalContext.agentType // empty')
 if [ -z "$AGENT" ]; then
-  curl -s -X PATCH "http://localhost:3458/api/tasks/$TASK_ID" \
+  curl -s --fail-with-body -X PATCH "http://localhost:3458/api/tasks/$TASK_ID" \
     -H 'Content-Type: application/json' \
-    -d '{"status":"blocked","summary":"no agentType on task — planner must set payload.goalContext.agentType"}' > /dev/null
+    -d '{"status":"blocked","summary":"no agentType on task — planner must set payload.goalContext.agentType"}' \
+    || { echo "PATCH blocked FAILED for #$TASK_ID"; exit 1; }
   continue
 fi
 
-curl -s -X PATCH "http://localhost:3458/api/tasks/$TASK_ID" \
-  -H 'Content-Type: application/json' -d '{"status":"in_progress"}' > /dev/null
+# Fail FAST if the declared agent has no .md file in this project. Without
+# the file, the Task tool spawns a default subagent with a stripped-down
+# tool set (no MCP allowlist, no skills) — which silently burns the 1-hour
+# budget pretending to work. Mark blocked and tell the user to wire it up.
+AGENT_FILE=".claude/agents/$AGENT.md"
+if [ ! -f "$AGENT_FILE" ]; then
+  curl -s --fail-with-body -X PATCH "http://localhost:3458/api/tasks/$TASK_ID" \
+    -H 'Content-Type: application/json' \
+    -d "$(jq -cn --arg a "$AGENT" \
+      '{status:"blocked",summary:("agentType `"+$a+"` has no agent file at .claude/agents/"+$a+".md — wire it in (e.g. via examples/seo-scout/README.md), or change the goal'\''s agentType.")}')" \
+    || { echo "PATCH blocked FAILED for #$TASK_ID"; exit 1; }
+  continue
+fi
+
+curl -s --fail-with-body -X PATCH "http://localhost:3458/api/tasks/$TASK_ID" \
+  -H 'Content-Type: application/json' -d '{"status":"in_progress"}' \
+  || { echo "PATCH in_progress FAILED for #$TASK_ID"; exit 1; }
 
 # Knowledge slugs: task override → agent default → ["goal-context"]
 SLUGS=$(echo "$TASK" | jq -r '.payload.knowledgeSlugs | if type=="array" then join(",") else "" end')
@@ -123,7 +167,8 @@ if [ -z "$SLUGS" ]; then
     | sed -E 's/^knowledge-slugs:[[:space:]]*\[?([^]]*)\]?.*/\1/' | tr -d ' ')
 fi
 SLUGS=${SLUGS:-goal-context}
-KNOWLEDGE=$(curl -s "http://localhost:3458/api/knowledge/prompt?slugs=$SLUGS" | jq -r '.markdown')
+KNOWLEDGE=$(curl -sf "http://localhost:3458/api/knowledge/prompt?slugs=$SLUGS" | jq -r '.markdown') \
+  || { echo "GET /api/knowledge/prompt FAILED"; exit 1; }
 ```
 
 Then invoke the `Task` tool with the shape documented above and the fields
@@ -137,14 +182,19 @@ case "$STATUS" in needs_review|blocked) ;; *) STATUS="needs_review" ;; esac
 SUMMARY=$(echo "$RESULT_JSON" | jq -r '.summary // ""')
 ARTIFACTS=$(echo "$RESULT_JSON" | jq -c '.artifacts // []')
 
-curl -s -X PATCH "http://localhost:3458/api/tasks/$TASK_ID" \
+curl -s --fail-with-body -X PATCH "http://localhost:3458/api/tasks/$TASK_ID" \
   -H 'Content-Type: application/json' \
   -d "$(jq -cn --arg s "$STATUS" --arg sum "$SUMMARY" --argjson a "$ARTIFACTS" \
-        '{status: $s, summary: $sum, artifacts: $a}')" > /dev/null
+        '{status: $s, summary: $sum, artifacts: $a}')" \
+  || { echo "PATCH result FAILED for #$TASK_ID — work was done but not recorded"; exit 1; }
 
-# Let auto-verify promote the card if it has a machine check.
-[ "$STATUS" = "needs_review" ] && \
-  curl -s -X POST "http://localhost:3458/api/tasks/$TASK_ID/approve" > /dev/null 2>&1 || true
+# Auto-verify promotes the card if it has a machine check. We DON'T treat a
+# 422 here as fatal — it just means verification didn't pass and the card
+# stays in needs_review for human review (which is the correct fallback).
+if [ "$STATUS" = "needs_review" ]; then
+  curl -s --fail-with-body -X POST "http://localhost:3458/api/tasks/$TASK_ID/approve" \
+    || echo "auto-approve declined for #$TASK_ID — left in needs_review for human review"
+fi
 ```
 
 Print one line per task: `#<id> <type> → <status> (<summary>) (<elapsed>)`.

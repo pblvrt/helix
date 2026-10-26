@@ -233,11 +233,20 @@ export function openDatabase(dbPath: string): Database.Database {
   db.exec(`CREATE INDEX IF NOT EXISTS idx_http_cache_expires ON http_cache(expires_at);`);
 
   // Mark stale running actions as crashed — a previous process died mid-run.
-  db.prepare("UPDATE actions SET status = 'crashed' WHERE status = 'running'").run();
+  const crashedActions = db.prepare("UPDATE actions SET status = 'crashed' WHERE status = 'running'").run();
+  if (crashedActions.changes > 0) {
+    console.log(`[db] Recovered ${crashedActions.changes} running action(s) → crashed (prior process died mid-run).`);
+  }
   // Similarly, any task left in_progress from a crashed session should go back
   // to backlog. needs_review tasks must NOT be touched here — they're awaiting
   // human action, not agent action.
-  db.prepare("UPDATE tasks SET status = 'backlog', run_id = NULL WHERE status = 'in_progress'").run();
+  // We log when this fires because a silent revert masks bugs like the agent
+  // PATCHing `needs_review` against a dead API and not noticing — boot then
+  // wipes the in_progress claim and the user sees "executor did nothing."
+  const recoveredTasks = db.prepare("UPDATE tasks SET status = 'backlog', run_id = NULL WHERE status = 'in_progress'").run();
+  if (recoveredTasks.changes > 0) {
+    console.log(`[db] Reverted ${recoveredTasks.changes} task(s) from in_progress → backlog (recovery from prior crash).`);
+  }
   // Retire the old 'skipped' state — the review-decline flow replaces it.
   // Existing skipped rows are left in place but will not be shown in the UI.
   // Convert them to 'done' so counts/filters stay consistent.

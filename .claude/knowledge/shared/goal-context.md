@@ -1,0 +1,1 @@
+../../../examples/seo-scout/.claude/knowledge/shared/goal-context.md
